@@ -4,7 +4,7 @@
 #include <string.h>
 #include <time.h>
 
-#define DEBUG true
+#define DEBUG false
 
 #define cols 21
 #define rows 21
