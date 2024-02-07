@@ -3,11 +3,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <unistd.h>
 
 #define DEBUG false
 
 #define cols 21
 #define rows 21
+#define boardlen (cols * rows)
 
 #define BASE_TPS 5
 #define FOOD_SPEEDUP 0.333
@@ -24,7 +26,6 @@
 
 typedef enum { false, true } bool;
 
-const int boardlen = cols * rows;
 char board[boardlen];
 
 char* death_text = NULL;
@@ -35,7 +36,7 @@ pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 int snake[boardlen]; // ring buffer containing snake guts
 int snake_head = 0;
 int snakeX, snakeY = 0;
-int snake_length = 300;
+int snake_length = 3;
 bool dead_snake[boardlen];
 
 char direction = '\0';
@@ -308,6 +309,11 @@ void* gather_input(void* param) {
 }
 
 void wait_until(clock_t until) {
+  float secs = ((float) until - clock()) / (float) CLOCKS_PER_SEC;
+  long sleep_usec = secs * 1000000 - 1000;
+  if (sleep_usec > 0) {
+    usleep(sleep_usec);
+  }
   while(clock() < until);
 }
 
@@ -326,7 +332,7 @@ int main(int arg, char **argv) {
   print_board();
   while(is_running()) {
     wait_until(next_tick);
-    next_tick += CLOCKS_PER_SEC / (int)tps;
+    next_tick = clock() + CLOCKS_PER_SEC / (int)tps;
     tick();
     print_board();
   }
