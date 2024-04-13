@@ -1,4 +1,4 @@
-Funk-ass snake game that runs in a terminal.
+Funk-ass snake game that runs in a terminal. About 300 lines of plain C.
 
 I compiled this with clang on Apple Silicon. If you aren't on that your mileage may vary.
 
